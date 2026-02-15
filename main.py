@@ -1,7 +1,9 @@
-import pygame
+import pygame # pyright: ignore[reportMissingImports]
 from logger import log_state
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
+from asteroid import Asteroid   
+from asteroidfield import AsteroidField
 
 def main():
     pygame.init()
@@ -12,19 +14,30 @@ def main():
 
     clock = pygame.time.Clock()
     dt = 0
+    
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    
+
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (updatable, drawable, asteroids)
+    AsteroidField.containers = (updatable,)
+
+    asteroid_field = AsteroidField()
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
-
+    
     while True:
         log_state()
+        screen.fill("black")
+        updatable.update(dt)
+        for sprite in drawable:
+            sprite.draw(screen)
+        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
-            screen.fill("black")
-            player.draw(screen)
-            player.update(dt)
-            pygame.display.flip()
-            
+                return       
+
         clock.tick(60)  # Limit to 60 FPS
         dt = clock.get_time() / 1000.0  # Convert milliseconds to seconds
         
