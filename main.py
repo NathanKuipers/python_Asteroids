@@ -3,7 +3,7 @@ import sys
 from logger import log_state, log_event
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
-from asteroid import Asteroid   
+from asteroid import Asteroid  
 from asteroidfield import AsteroidField
 from shot import Shot
 
@@ -42,6 +42,12 @@ def main():
                 sys.exit()
         for sprite in drawable:
             sprite.draw(screen)
+        for asteroid in asteroids:
+            for shot in shots:
+                if asteroid.collides_with(shot):
+                    log_event("asteroid_shot")
+                    asteroid.split()
+                    shot.kill()
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
