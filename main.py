@@ -1,5 +1,6 @@
 import pygame # pyright: ignore[reportMissingImports]
-from logger import log_state
+import sys
+from logger import log_state, log_event
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from player import Player
 from asteroid import Asteroid   
@@ -31,6 +32,11 @@ def main():
         log_state()
         screen.fill("black")
         updatable.update(dt)
+        for sprite in asteroids:
+            if player.collides_with(sprite):
+                log_event("player_hit")
+                print("Game Over!")
+                sys.exit()
         for sprite in drawable:
             sprite.draw(screen)
         pygame.display.flip()
